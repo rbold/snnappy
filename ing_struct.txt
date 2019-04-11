@@ -1,0 +1,60 @@
+The Structure of a .ing file resulting from running SNNAP
+__________________________________________________________
+
+
+Simulation name
+Simulation timing Start Stop Step
+Whether to have online graph
+Whether to store results
+Integration method (only 1=Euler exists)
+INT_&_FIRE not sure
+Number of neurons
+    Neuron number and Name
+    Threshold
+    Spike duration
+    Initial membrane potential
+    Membrane conductance
+    Membrane area
+    is_TR not sure
+    Number of voltage gates
+        Voltage gate number and Name
+        Ivd specifies the equation for calculating current through gate, five options
+        Number of parameter
+        Values of parameters
+        Whether other equations (A,B,m,h,R) exist (varies for different Ivd)
+            Activation equation (if exist) Equation letter
+            Equation name Number specifying form
+            Number of parameters
+            Parameter values
+                Sub equation name Number speciying form
+                Number of parameters
+                Parameter values
+            Inactivation equation (if exist) Equation letter
+            Equation name Number specifying form
+            Number of parameters
+            Parameter values
+                Sub equation name Number speciying form
+                Number of parameters
+                Parameter values
+    Other possible neuron features
+Number of cells
+Number of electrical synapses
+    Electrical synapse number Neuron1# Neuron1name Neuron2# Neuron2name
+    Ies specifies how to calculate current through synapse (only one option)
+    Number of parameters
+    Values of parameters
+    R1 present
+    R2 present
+Number of chemical synapses
+    Chemical synapse number Neuron1# Neuron1name Neuron2# Neuron2name Inhibitory or Excitatory
+    Whether it is cell to neuron (probably not)
+    Ics specifies how to calculate current (all 1 in Cataldo)
+    Number of parameters
+    Values of parameters
+    Whether other equations (fAt,fAvt,R) exist (varies for different Ivd)
+        Equation name Number specifying form
+        Some equations also have a bool indicating further dependencies
+        Number of parameters
+        Values of parameters
+
+            

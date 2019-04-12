@@ -2,7 +2,8 @@ from neuron import h
 h.load_file('stdrun.hoc')
 from matplotlib import pyplot
 
-## Here I'll try to do the SNNAP example network with NEURON
+## Here I'll try to do the SNNAP example generic cell with NEURON
+## Try to just copy the simulation from generic_cell_01.smu.ing
 
 # morphology and dynamics
 soma = h.Section()

@@ -8,7 +8,7 @@ import numpy as np
 ## Try to just copy the simulation from generic_cell_01.smu.ing
 
 t = snnappy.snnapsim()
-t.from_ing("generic_cell_01.smu.ing")
+t.from_ing("generic_cell.smu.ing")
 
 # create NEURON versions of SNNAP neurons
 cells = []
@@ -61,10 +61,13 @@ for nrn in t.nrns:
             print 'tauAmin: ' + str(mechs[mn].tauAmin)
             mechs[mn].tauAmax    =   chnl.tx_tA*10**3    # (ms)
             print 'tauAmax: ' + str(mechs[mn].tauAmax)
-            mechs[mn].htauA      =   -chnl.h_tA     # (mV)
+            mechs[mn].htauA      =   chnl.h_tA     # (mV)
             print 'htauA: ' + str(mechs[mn].htauA)
             mechs[mn].stauA      =   chnl.s_tA     # (mV)
             print 'stauA: ' + str(mechs[mn].stauA)
+
+            mechs[mn].Ainit = chnl.A_init
+            print 'Ainit: ' + str(mechs[mn].Ainit)
 
         elif chnl.method == '1':
             print 'adding '+ chnl.name
@@ -86,7 +89,7 @@ for nrn in t.nrns:
             print 'tauAmin: ' + str(mechs[mn].tauAmin)
             mechs[mn].tauAmax    =   chnl.tx_tA*10**3    # (ms)
             print 'tauAmax: ' + str(mechs[mn].tauAmax)
-            mechs[mn].htauA      =   -chnl.h_tA     # (mV)
+            mechs[mn].htauA      =   chnl.h_tA     # (mV)
             print 'htauA: ' + str(mechs[mn].htauA)
             mechs[mn].stauA      =   chnl.s_tA     # (mV)
             print 'stauA: ' + str(mechs[mn].stauA)
@@ -109,20 +112,22 @@ for nrn in t.nrns:
             mechs[mn].stauB      =   chnl.s_tB     # (mV)
             print 'stauB: ' + str(mechs[mn].stauB)
 
+            mechs[mn].Ainit = chnl.A_init
+            print 'Ainit: ' + str(mechs[mn].Ainit)
+            mechs[mn].Binit = chnl.B_init
+            print 'Binit: ' + str(mechs[mn].Binit)
+
         else:
             raise NotImplementedError
     print 'done building ' + nrn.name + '.'
     j+=1
 
-for mech in mechs:
-    print mech.has_loc()
-
-# # current clamp
-# i = h.IClamp(cells[0](0.5))
-# i.delay = t.inj_start # ms
-# i.dur = t.inj_stop-t.inj_start # ms
-# i.amp = t.inj_mag*100 # nA
-# # recording
+# current clamp
+i = h.IClamp(cells[0](0.5))
+i.delay = t.inj_start # ms
+i.dur = t.inj_stop-t.inj_start # ms
+i.amp = t.inj_mag # nA
+# recording
 time = h.Vector()
 v = h.Vector()
 time.record(h._ref_t)

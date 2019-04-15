@@ -1,0 +1,141 @@
+LOGICAL_NAME	generic_cell
+TIMING: 0.0 1.2 5.0E-5
+ON_LINE_GRAPH: 1
+STORE_RESULTS: 0
+INT_METHOD: 1
+INT_&_FIRE: 0.0
+#NEUR	1
+neur#=0	GEN_a
+
+THRESHOLD	0.0
+SPIKDUR	0.003
+VMINIT	-70.0
+CM	5.0E-4
+MEM_AREA	1.0
+is_TR=	0
+#VDG	3
+vdg#=0	Na
+Ivd	1
+#prm	3
+8.0	3.0	50.0	
+A	1
+B	1
+m	0
+h	0
+R	0
+ACTIVATION=A	
+A	2
+#prm	1
+-1.0	
+ssA	1
+#prm	3
+-49.0	5.0	1.0	
+tA	2
+#prm	5
+0.006	0.001	-55.0	4.0	1.0	
+INACTIVATION=B	
+B	2
+#prm	1
+-1.0	
+ssB	1
+#prm	3
+-55.0	5.0	1.0	
+tB	2
+#prm	5
+0.02	0.005	-50.0	10.0	1.0	
+vdg#=1	K
+Ivd	3
+#prm	3
+32.0	4.0	-80.0	
+A	1
+B	0
+m	0
+h	0
+R	0
+ACTIVATION=A	
+A	2
+#prm	1
+-1.0	
+ssA	1
+#prm	3
+-35.0	9.0	1.0	
+tA	2
+#prm	5
+0.08	0.008	-20.0	10.0	1.0	
+vdg#=2	leak
+Ivd	5
+#prm	2
+0.1	-70.0	
+A	0
+B	0
+m	0
+h	0
+R	0
+#ION	0
+#SM	0
+#I2C	0
+#gbi	0
+#gbs	0
+#tbi	0
+#tbs	0
+#sbi	0
+#sbs	0
+#LDG	0
+#CC	0
+#MOB	0
+#TRP	0
+
+#CELL	0
+
+#ESYN	0
+#CSYN	0
+#MSYN	0
+#WEIGHT	0
+
+#RSYN	0
+#CINJ	1
+	0	GEN_a	0.1	1.1	0.75
+#MINJ	0
+#VCLMP	0
+#ICLMP	0
+#LIGHT	0
+
+Ousfile_PATH  C:\snnap_8_1\snnap8_1\examples\HH_type_neurons\generic_cell\generic_cell.ous
+#GRAPH_CHNL	2
+gain=	1
+nvar=	1
+name=	time<{ivr}
+vartype=	3
+n_tic=	6
+min=	0.0
+max=	1.2
+color=	yellow
+gain=	1
+nvar=	1
+name=	time<{ivr}
+vartype=	3
+n_tic=	6
+min=	0.0
+max=	1.2
+color=	yellow
+#GRAPH_VAR	2
+chn_id=	0
+name=	V[GEN_a....]<{svr}
+name2=	NULL
+vartype=	1
+vartype2=	-1
+n_tic=	7
+min=	-80.0
+max=	60.0
+color=	cyan
+chn_id=	1
+name=	sIex[GEN_a....]<{ivr}
+name2=	NULL
+vartype=	3
+vartype2=	-1
+n_tic=	5
+min=	0.0
+max=	1.0
+color=	magenta
+#VAR2FILE		0
+

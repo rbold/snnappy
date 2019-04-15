@@ -198,7 +198,7 @@ class snnapchnl:
             # dA/dt = (ssA-A)/tA
             i = i+2
             line = ing[i]
-            self.A_init = line # unitless
+            self.A_init = float(line) # unitless
             # find ssA
             i = i+1
             line = ing[i].split()
@@ -274,7 +274,7 @@ class snnapchnl:
             self.h_ssB = float(line[0]) # mV
             self.s_ssB = float(line[1]) # mV
             self.P_ssB = float(line[2])
-            self.ssB_equation = 'ssB = (1+e**(('+str(self.h_ssB)+'-V)/'+str(self.s_ssB)+')**-'+str(self.P_ssB)
+            self.ssB_equation = 'ssB = (1+e**((V-'+str(self.h_ssB)+')/'+str(self.s_ssB)+')**-'+str(self.P_ssB)
             print self.ssB_equation
         else:
             raise NotImplementedError

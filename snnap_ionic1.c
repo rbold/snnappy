@@ -58,22 +58,21 @@ extern double hoc_Exp(double);
 #define htauA _p[11]
 #define stauA _p[12]
 #define ptauA _p[13]
-#define htauA2 _p[14]
-#define stauA2 _p[15]
-#define ptauA2 _p[16]
-#define tauBmin _p[17]
-#define tauBmax _p[18]
-#define htauB _p[19]
-#define stauB _p[20]
-#define ptauB _p[21]
-#define i _p[22]
-#define g _p[23]
-#define A _p[24]
-#define B _p[25]
-#define DA _p[26]
-#define DB _p[27]
-#define v _p[28]
-#define _g _p[29]
+#define tauBmin _p[14]
+#define tauBmax _p[15]
+#define htauB _p[16]
+#define stauB _p[17]
+#define ptauB _p[18]
+#define Ainit _p[19]
+#define Binit _p[20]
+#define i _p[21]
+#define g _p[22]
+#define A _p[23]
+#define B _p[24]
+#define DA _p[25]
+#define DB _p[26]
+#define v _p[27]
+#define _g _p[28]
 #define _nd_area  *_ppvar[0]._pval
  
 #if MAC
@@ -165,8 +164,6 @@ extern Memb_func* memb_func;
  "tauAmax", "ms",
  "htauA", "mV",
  "stauA", "mV",
- "htauA2", "mV",
- "stauA2", "mV",
  "tauBmin", "ms",
  "tauBmax", "ms",
  "htauB", "mV",
@@ -220,14 +217,13 @@ static void _ode_matsol(_NrnThread*, _Memb_list*, int);
  "htauA",
  "stauA",
  "ptauA",
- "htauA2",
- "stauA2",
- "ptauA2",
  "tauBmin",
  "tauBmax",
  "htauB",
  "stauB",
  "ptauB",
+ "Ainit",
+ "Binit",
  0,
  "i",
  "g",
@@ -247,7 +243,7 @@ static void nrn_alloc(Prop* _prop) {
 	_p = nrn_point_prop_->param;
 	_ppvar = nrn_point_prop_->dparam;
  }else{
- 	_p = nrn_prop_data_alloc(_mechtype, 30, _prop);
+ 	_p = nrn_prop_data_alloc(_mechtype, 29, _prop);
  	/*initialize range parameters*/
  	e = 0;
  	gmax = 0;
@@ -263,17 +259,16 @@ static void nrn_alloc(Prop* _prop) {
  	htauA = 0;
  	stauA = 0;
  	ptauA = 1;
- 	htauA2 = 0;
- 	stauA2 = 1;
- 	ptauA2 = 0;
  	tauBmin = 0;
  	tauBmax = 0;
  	htauB = 0;
  	stauB = 0;
  	ptauB = 1;
+ 	Ainit = 0;
+ 	Binit = 0;
   }
  	_prop->param = _p;
- 	_prop->param_size = 30;
+ 	_prop->param_size = 29;
   if (!nrn_point_prop_) {
  	_ppvar = nrn_prop_datum_alloc(_mechtype, 3, _prop);
   }
@@ -302,7 +297,7 @@ extern void _cvode_abstol( Symbol**, double*, int);
 	 _hoc_create_pnt, _hoc_destroy_pnt, _member_func);
  _mechtype = nrn_get_mechtype(_mechanism[1]);
      _nrn_setdata_reg(_mechtype, _setdata);
-  hoc_register_prop_size(_mechtype, 30, 3);
+  hoc_register_prop_size(_mechtype, 29, 3);
   hoc_register_dparam_semantics(_mechtype, 0, "area");
   hoc_register_dparam_semantics(_mechtype, 1, "pntproc");
   hoc_register_dparam_semantics(_mechtype, 2, "cvodeieq");
@@ -348,7 +343,7 @@ static int _ode_spec1(_threadargsproto_);
  
 double Ainf ( _threadargsprotocomma_ double _lv ) {
    double _lAinf;
- _lAinf = 1.0 / ( 1.0 + exp ( ( _lv - hA ) / sA ) ) ;
+ _lAinf = 1.0 / ( 1.0 + exp ( ( hA - _lv ) / sA ) ) ;
    
 return _lAinf;
  }
@@ -384,7 +379,7 @@ static double _hoc_Binf(void* _vptr) {
  
 double tauA ( _threadargsprotocomma_ double _lv ) {
    double _ltauA;
- _ltauA = tauAmin + ( tauAmax - tauAmin ) / pow( ( 1.0 + exp ( ( _lv - htauA ) / stauA ) ) , ptauA ) / pow( ( 1.0 + exp ( ( _lv - htauA2 ) / stauA2 ) ) , ptauA2 ) ;
+ _ltauA = tauAmin + ( tauAmax - tauAmin ) / pow( ( 1.0 + exp ( ( _lv - htauA ) / stauA ) ) , ptauA ) ;
    
 return _ltauA;
  }

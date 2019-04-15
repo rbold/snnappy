@@ -1,0 +1,99 @@
+/* create_b63s.hoc
+ *
+ * NEURON hoc code for implementing B63 soma
+ *
+ * Copyright (c) 2012, Jeffrey P Gill and Shang-Shen Yu
+ *
+ * This file is part of NEURON Reconstruction of Susswein et al. 2002.
+ * 
+ * NEURON Reconstruction of Susswein et al. 2002 is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ * 
+ * NEURON Reconstruction of Susswein et al. 2002 is distributed in the hope
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with NEURON Reconstruction of Susswein et al. 2002.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+
+// Membrane surface area is normalized to 1 cm2 for convenience. Since this is a
+// non-spatial model, we can get away with this.
+
+create b63s
+b63s {
+   nseg = 1                   // single compartment
+   diam = 1                   // (um)
+   L = 3.1831e7               // (um)
+   // total area = pi*diam*L = 1e8 um2 = 1 cm2
+
+   // membrane capacitance
+   cm = 0.003                 // (uF/cm2)
+
+   // leak current
+   insert pas
+   e_pas = -60.0              // (mV)
+   g_pas = 0.025e-6           // (S/cm2)
+}
+
+print area(0.5)               // = total area / nseg
+
+// sodium current
+objref b63s_Na
+b63s b63s_Na = new snnap_ionic(0.5)
+
+b63s_Na.e         =   50.0    // (mV)
+b63s_Na.gmax      =    7.5    // (uS)
+b63s_Na.p         =    3
+
+b63s_Na.hA        =  -42.1    // (mV)
+b63s_Na.sA        =   -4.8    // (mV)
+
+b63s_Na.hB        =  -51.5    // (mV)
+b63s_Na.sB        =    9.2    // (mV)
+b63s_Na.pB        =    1
+b63s_Na.Bmin      =    0
+
+b63s_Na.tauAmin   =    0.45   // (ms)
+b63s_Na.tauAmax   =    1.5    // (ms)
+b63s_Na.htauA     =  -32.7    // (mV)
+b63s_Na.stauA     =    1.85   // (mV)
+
+b63s_Na.tauBmin   =    2.4    // (ms)
+b63s_Na.tauBmax   =   10.     // (ms)
+b63s_Na.htauB     =  -39.2    // (mV)
+b63s_Na.stauB     =    3.5    // (mV)
+
+// potassium current
+objref b63s_K
+b63s b63s_K = new snnap_ionic(0.5)
+
+b63s_K.e          =  -70.0    // (mV)
+b63s_K.gmax       =   27.5    // (uS) -- discrepancy between paper (25.0) and SNNAP code (27.5)
+b63s_K.p          =    4
+
+b63s_K.hA         =  -26.4    // (mV)
+b63s_K.sA         =   -8.8    // (mV)
+
+b63s_K.hB         =  -16.4    // (mV)
+b63s_K.sB         =    1.5    // (mV)
+b63s_K.pB         =    2
+b63s_K.Bmin       =    0.15
+
+b63s_K.tauAmin    =    2.16   // (ms)
+b63s_K.tauAmax    =   27.     // (ms)
+b63s_K.htauA      =  -24.0    // (mV)
+b63s_K.stauA      =   11.7    // (mV)
+b63s_K.htauA2     =  -51.0    // (mV)
+b63s_K.stauA2     =  -11.2    // (mV)
+b63s_K.ptauA2     =    1
+
+b63s_K.tauBmin    =   20.     // (ms)
+b63s_K.tauBmax    =  200.     // (ms)
+b63s_K.htauB      =  -24.0    // (mV)
+b63s_K.stauB      =    8.3    // (mV)

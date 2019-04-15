@@ -1,0 +1,45 @@
+/* create_cs.hoc
+ *
+ * NEURON hoc code for implementing chemical synapse
+ *
+ * Copyright (c) 2012, Jeffrey P Gill and Shang-Shen Yu
+ *
+ * This file is part of NEURON Reconstruction of Susswein et al. 2002.
+ * 
+ * NEURON Reconstruction of Susswein et al. 2002 is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ * 
+ * NEURON Reconstruction of Susswein et al. 2002 is distributed in the hope
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with NEURON Reconstruction of Susswein et al. 2002.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+
+// When b63a rises above threshold, the NetCon object will detect the event and
+// send a message with weight to the snnap_cs point process on b31 after delay.
+
+threshold   = -10    // (mV)
+delay       =   0    // (ms)
+weight      =   1
+
+// chemical synapse
+objref cs
+b31 cs = new snnap_cs(0.5)
+
+cs.e        =   0.0  // (mV)
+cs.g        =   4.0  // (uS)
+cs.dur      =   3    // (ms)
+cs.taucs    =  14    // (ms)
+cs.tauSP1   = -10    // (ms)
+cs.tauSP2   =  70    // (ms)
+
+// threshold detector
+objref cs_nc
+b63a cs_nc = new NetCon(&v(0.5), cs, threshold, delay, weight)

@@ -1,0 +1,96 @@
+/* create_b31.hoc
+ *
+ * NEURON hoc code for implementing B31
+ *
+ * Copyright (c) 2012, Jeffrey P Gill and Shang-Shen Yu
+ *
+ * This file is part of NEURON Reconstruction of Susswein et al. 2002.
+ * 
+ * NEURON Reconstruction of Susswein et al. 2002 is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ * 
+ * NEURON Reconstruction of Susswein et al. 2002 is distributed in the hope
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with NEURON Reconstruction of Susswein et al. 2002.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+
+// Membrane surface area is normalized to 1 cm2 for convenience. Since this is a
+// non-spatial model, we can get away with this.
+
+create b31
+b31 {
+   nseg = 1                   // single compartment
+   diam = 1                   // (um)
+   L = 3.1831e7               // (um)
+   // total area = pi*diam*L = 1e8 um2 = 1 cm2
+
+   // membrane capacitance
+   cm = 0.011                 // (uF/cm2)
+
+   // leak current
+   insert pas
+   e_pas = -60.0              // (mV)
+   g_pas = 1.22e-6            // (S/cm2)
+}
+
+print area(0.5)               // = total area / nseg
+
+// sodium current
+objref b31_Na
+b31 b31_Na = new snnap_ionic(0.5)
+
+b31_Na.e          =   40.0    // (mV)
+b31_Na.gmax       =    2.4    // (uS)
+b31_Na.p          =    3
+
+b31_Na.hA         =  -45.0    // (mV)
+b31_Na.sA         =   -8.0    // (mV)
+
+b31_Na.hB         =  -40.0    // (mV)
+b31_Na.sB         =    1.2    // (mV)
+b31_Na.pB         =    1
+b31_Na.Bmin       =    0
+
+b31_Na.tauAmin    =  400.     // (ms)
+b31_Na.tauAmax    =  400.     // (ms)
+b31_Na.htauA      =    0      // (mV)
+b31_Na.stauA      =    1      // (mV)
+
+b31_Na.tauBmin    = 4000.     // (ms)
+b31_Na.tauBmax    = 4000.     // (ms)
+b31_Na.htauB      =    0      // (mV)
+b31_Na.stauB      =    1      // (mV)
+
+// potassium current
+objref b31_K
+b31 b31_K = new snnap_ionic(0.5)
+
+b31_K.e           =  -75.0    // (mV)
+b31_K.gmax        =    5.0    // (uS)
+b31_K.p           =    2
+
+b31_K.hA          =  -30.0    // (mV)
+b31_K.sA          =   -3.0    // (mV)
+
+b31_K.hB          =  -57.1    // (mV)
+b31_K.sB          =   23.3    // (mV)
+b31_K.pB          =    1
+b31_K.Bmin        =    0
+
+b31_K.tauAmin     = 4000.     // (ms)
+b31_K.tauAmax     = 7000.     // (ms)
+b31_K.htauA       =  -41.55   // (mV)
+b31_K.stauA       =    2.9    // (mV)
+
+b31_K.tauBmin     =   50.     // (ms)
+b31_K.tauBmax     =  140.     // (ms)
+b31_K.htauB       =  -37.0    // (mV)
+b31_K.stauB       =    5.8    // (mV)

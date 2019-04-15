@@ -1,0 +1,78 @@
+/* sim_fig1b.hoc
+ *
+ * NEURON hoc code for generating figure 1b
+ *
+ * Copyright (c) 2012, Jeffrey P Gill and Shang-Shen Yu
+ *
+ * This file is part of NEURON Reconstruction of Susswein et al. 2002.
+ * 
+ * NEURON Reconstruction of Susswein et al. 2002 is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ * 
+ * NEURON Reconstruction of Susswein et al. 2002 is distributed in the hope
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with NEURON Reconstruction of Susswein et al. 2002.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+
+// load gui and standard run library
+load_file("nrngui.hoc")
+
+// create neurons
+load_file("create_b63s.hoc")
+load_file("create_b63a.hoc")
+load_file("create_b31.hoc")
+
+// create electrical and chemical synapses
+load_file("create_es.hoc")
+load_file("create_cs.hoc")
+
+// create stim objects
+objref stim[2]
+b63s stim[0] = new IClamp(0.5)
+b31  stim[1] = new IClamp(0.5)
+
+// stim to b63s
+stim[0].del = 100    // (ms) -- estimated from figure
+stim[0].dur = 375    // (ms) -- estimated from figure
+stim[0].amp = -3     // (nA)
+
+// stim to b31
+stim[1].del = 800    // (ms) -- estimated from figure
+stim[1].dur = 400    // (ms) -- estimated from figure
+stim[1].amp = -30    // (nA)
+
+// initialize simulation
+v_init = -60         // (mV)
+tstop  = 1800        // (ms) -- estimated from figure
+cvode.active(1)      // enable variable time steps
+finitialize()        // initialize state variables (INITIAL blocks)
+fcurrent()           // initialize all currents    (BREAKPOINT blocks)
+
+// create plots
+objref plots[4]
+for i = 0, 2 {
+   plots[i] = new Graph(0)
+   addplot(plots[i], 0)
+   // view: xmin, ymin, xrange, yrange, winleft, wintop, winwidth, winheight
+   plots[i].view(0, -110, tstop, 140, 0, i*290, 350, 160)
+}
+plots[3] = new Graph(0)
+addplot(plots[3], 0)
+plots[3].view(0, -110, tstop, 140, 600, 0, 350, 160)
+plots[0].addvar("B63 soma Vm", "b63s.v(0.5)", 2, 1)
+plots[1].addvar("B63 axon Vm", "b63a.v(0.5)", 3, 1)
+plots[2].addvar("B31 Vm",      "b31.v(0.5)",  1, 1)
+plots[3].addvar("B63 soma Vm", "b63s.v(0.5)", 2, 1)
+plots[3].addvar("B63 axon Vm", "b63a.v(0.5)", 3, 1)
+plots[3].addvar("B31 Vm",      "b31.v(0.5)",  1, 1)
+
+// run simulation
+run()

@@ -1,7 +1,6 @@
 ## This file contains classes representing SNNAP objects in python
 
 class snnapsim:
-
     def from_ing(self, ing_file):
         ing = open(ing_file, 'r').readlines() # list of lines as strings
         i = 0 # line index
@@ -18,25 +17,35 @@ class snnapsim:
                     i += 1
                 elif v == 'TIMING:':
                     # load times
-                    self.start = line[1]
-                    self.stop = line[2]
-                    self.step = line[3]
-                    print 'run from ' + self.start + 's to ' + self.stop +'s'
-                    print 'in steps of ' + self.step + 's'
+                    self.start = float(line[1])*1000.0 # milliseconds
+                    self.stop = float(line[2])*1000.0 # milliseconds
+                    self.step = float(line[3])*1000.0 # milliseconds
+                    print 'run from ' + str(self.start) + 'ms to ' + str(self.stop) +'ms'
+                    print 'in steps of ' + str(self.step) + 'ms'
                     i += 1
                 # skipping some stuff I won't need
                 elif v == '#NEUR':
                     print line[1] + " neurons to load"
                     nrnct = int(line[1]) # number of neurons
                     i = self.getnrns(ing, nrnct, i+1)
+                elif v == '#CINJ':
+                    print line[1] + " current injection"
+                    i += 1
+                    line = ing[i].split()
+                    self.inj_nrn = line[1]
+                    self.inj_start = float(line[2])*1000.0 # milliseconds
+                    print 'start at ' + line[2] + ' ms'
+                    self.inj_stop = float(line[3])*1000.0 # milliseconds
+                    print 'stop at ' + line[3] + ' ms'                    
+                    self.inj_mag = float(line[4]) # could be a function though
+                    print 'amplitude of ' + line[4] + ' nA'
+                # skipping stuff again
                 else:
                     i += 1
         print 'done loading ' + self.name + ' at line '+ str(i)
     
     def getnrns(self, ing, n, i):
-        self.nrns = []
-        for j in range(n):
-            self.nrns.append(snnapnrn())
+        self.nrns = [snnapnrn()]*n
         fn = 0 # number of neurons found
         while fn < n:
             line = ing[i].split()
@@ -66,23 +75,23 @@ class snnapnrn:
                 v = line[0]
                 if v == "THRESHOLD":
                     # load threshold
-                    self.thresh = line[1]
+                    self.thresh = float(line[1]) # mV
                     i += 1
                 elif v == 'SPIKDUR':
                     # load spike time
-                    self.spikdur = line[1]
+                    self.spikdur = float(line[1])*1000.0 # milliseconds
                     i += 1
                 elif v == 'VMINIT':
                     # load init membrane voltage
-                    self.vminit = line[1]
+                    self.vminit = float(line[1]) # mV
                     i += 1
                 elif v == 'CM':
                     # load membrane capacitance
-                    self.cm = line[1]
+                    self.cm = float(line[1]) # uF
                     i += 1
                 elif v == 'MEM_AREA':
                     # load membrane area
-                    self.spikdur = line[1]
+                    self.am = float(line[1]) # um**2
                     i += 1
                 # skipping some stuff I won't need
                 elif v == '#VDG':
@@ -96,8 +105,6 @@ class snnapnrn:
 
     def getchnls(self, ing, n, i):
         self.chnls = []
-        for j in range(n):
-            self.chnls.append(snnapchnl())
         fn = 0 # number of channels found
         while fn < n:
             line = ing[i].split()
@@ -105,7 +112,9 @@ class snnapnrn:
                 i += 1
             else:
                 if line[0] == 'vdg#='+str(fn):
-                    i = self.chnls[fn].from_ing(fn, line[1], ing, i) - 1
+                    self.chnls.append(snnapchnl())
+                    cn = len(self.chnls) -1
+                    i =  self.chnls[cn].from_ing(cn, line[1], ing, i) - 1
                     fn += 1
                 else:
                     i += 1
@@ -131,13 +140,14 @@ class snnapchnl:
     
     def getivd(self, method, ing, i):
         # note this excludes a lot of features right now including randomness, R
+        self.method = method
         if method == '1': 
             # First, get Ivd params
             i = i+2
             line = ing[i].split()
-            self.g = line[0] # uS or S/cm2 if using area
-            self.P_Ivd = line[1]
-            self.E = line[2] # mV
+            self.g = float(line[0]) # uS or S/cm2 if using area
+            self.P_Ivd = float(line[1])
+            self.E = float(line[2]) # mV
             # Get A
             i = i+7
             line = ing[i].split()
@@ -155,9 +165,9 @@ class snnapchnl:
             # First, get Ivd params
             i = i+2
             line = ing[i].split()
-            self.g = line[0] # uS or S/cm2 if using area
-            self.P_Ivd = line[1]
-            self.E = line[2] # mV
+            self.g = float(line[0]) # uS or S/cm2 if using area
+            self.P_Ivd = float(line[1])
+            self.E = float(line[2]) # mV
             # Get A
             i = i+7
             line = ing[i].split()
@@ -170,8 +180,8 @@ class snnapchnl:
             # Get Ivd params
             i = i+2
             line = ing[i].split()
-            self.g = line[0] # uS or S/cm2 if using area
-            self.E = line[1] # mV
+            self.g = float(line[0]) # uS or S/cm2 if using area
+            self.E = float(line[1]) # mV
             # Equations are:
             self.Ivd_equation = 'Ivd = G*(V -'+str(self.E)+')* fBR'
             self.G_equation = 'G = '+str(self.g)
@@ -209,9 +219,9 @@ class snnapchnl:
         if method == '1':
             i = i+2
             line = ing[i].split()
-            self.h_ssA = line[0] # mV
-            self.s_ssA = line[1] # mV
-            self.P_ssA = line[2]
+            self.h_ssA = float(line[0]) # mV
+            self.s_ssA = float(line[1]) # mV
+            self.P_ssA = float(line[2])
             self.ssA_equation = 'ssA = (1+e**(('+str(self.h_ssA)+'-V)/'+str(self.s_ssA)+')**-'+str(self.P_ssA)
             print self.ssA_equation
         else:
@@ -222,11 +232,11 @@ class snnapchnl:
         if method == '2':
             i = i+2
             line = ing[i].split()
-            self.tx_tA = line[0] # seconds
-            self.tn_tA = line[1] # seconds
-            self.h_tA = line[2] # mV
-            self.s_tA = line[3] # mV
-            self.P_tA = line[4]
+            self.tx_tA = float(line[0]) # seconds
+            self.tn_tA = float(line[1]) # seconds
+            self.h_tA = float(line[2]) # mV
+            self.s_tA = float(line[3]) # mV
+            self.P_tA = float(line[4])
             self.tA_equation = 'tA = ('+str(self.tx_tA)+'-'+str(self.tn_tA)+')*(1+e**((V-'+str(self.h_tA)+')/'+str(self.s_tA)+'))**-'+str(self.P_tA)+' + '+str(self.tn_tA)
             print self.tA_equation
         else:
@@ -239,7 +249,7 @@ class snnapchnl:
         elif method == '2':
             i = i+2
             line = ing[i]
-            self.B_init = line # unitless
+            self.B_init = float(line) # unitless
             # find ssB
             i = i+1
             line = ing[i].split()
@@ -261,9 +271,9 @@ class snnapchnl:
         if method == '1':
             i = i+2
             line = ing[i].split()
-            self.h_ssB = line[0] # mV
-            self.s_ssB = line[1] # mV
-            self.P_ssB = line[2]
+            self.h_ssB = float(line[0]) # mV
+            self.s_ssB = float(line[1]) # mV
+            self.P_ssB = float(line[2])
             self.ssB_equation = 'ssB = (1+e**(('+str(self.h_ssB)+'-V)/'+str(self.s_ssB)+')**-'+str(self.P_ssB)
             print self.ssB_equation
         else:
@@ -274,15 +284,13 @@ class snnapchnl:
         if method == '2':
             i = i+2
             line = ing[i].split()
-            self.tx_tB = line[0] # seconds
-            self.tn_tB = line[1] # seconds
-            self.h_tB = line[2] # mV
-            self.s_tB = line[3] # mV
-            self.P_tB = line[4]
+            self.tx_tB = float(line[0]) # seconds
+            self.tn_tB = float(line[1]) # seconds
+            self.h_tB = float(line[2]) # mV
+            self.s_tB = float(line[3]) # mV
+            self.P_tB = float(line[4])
             self.tB_equation = 'tB = ('+str(self.tx_tB)+'-'+str(self.tn_tB)+')*(1+e**((V-'+str(self.h_tB)+')/'+str(self.s_tB)+'))**-'+str(self.P_tB)+' + '+str(self.tn_tB)
             print self.tB_equation
         else:
             raise NotImplementedError
         return i 
-t = snnapsim()
-t.from_ing("generic_cell_01.smu.ing")

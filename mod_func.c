@@ -3,6 +3,8 @@
 #define IMPORT extern __declspec(dllimport)
 IMPORT int nrnmpi_myid, nrn_nobanner_;
 
+extern void _snnap_cs_reg();
+extern void _snnap_cs_nopsm_reg();
 extern void _snnap_ionic1_reg();
 extern void _snnap_ionic3_reg();
 
@@ -11,10 +13,14 @@ void modl_reg(){
     if (!nrn_nobanner_) if (nrnmpi_myid < 1) {
 	fprintf(stderr, "Additional mechanisms from files\n");
 
+fprintf(stderr," snnap_cs.mod");
+fprintf(stderr," snnap_cs_nopsm.mod");
 fprintf(stderr," snnap_ionic1.mod");
 fprintf(stderr," snnap_ionic3.mod");
 fprintf(stderr, "\n");
     }
+_snnap_cs_reg();
+_snnap_cs_nopsm_reg();
 _snnap_ionic1_reg();
 _snnap_ionic3_reg();
 }

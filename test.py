@@ -1,6 +1,6 @@
 from neuron import h
 h.load_file('stdrun.hoc')
-from matplotlib import pyplot
+from matplotlib import plt
 
 soma = h.Section(name='soma')
 soma.insert('pas')
@@ -23,8 +23,8 @@ t_vec.record(h._ref_t)
 h.tstop = 40.0
 h.run()
 
-pyplot.figure(figsize=(8,4)) # Default figsize is (8,6)
-pyplot.plot(t_vec, v_vec)
-pyplot.xlabel('time (ms)')
-pyplot.ylabel('mV')
-pyplot.show()
+plt.figure(figsize=(8,4)) # Default figsize is (8,6)
+plt.plot(t_vec, v_vec)
+plt.xlabel('time (ms)')
+plt.ylabel('mV')
+plt.show()

@@ -22,14 +22,14 @@ extern int _method3;
 extern double hoc_Exp(double);
 #endif
  
-#define nrn_init _nrn_init__snnap_ionic1
-#define _nrn_initial _nrn_initial__snnap_ionic1
-#define nrn_cur _nrn_cur__snnap_ionic1
-#define _nrn_current _nrn_current__snnap_ionic1
-#define nrn_jacob _nrn_jacob__snnap_ionic1
-#define nrn_state _nrn_state__snnap_ionic1
-#define _net_receive _net_receive__snnap_ionic1 
-#define states states__snnap_ionic1 
+#define nrn_init _nrn_init__snnap_cs_nopsm
+#define _nrn_initial _nrn_initial__snnap_cs_nopsm
+#define nrn_cur _nrn_cur__snnap_cs_nopsm
+#define _nrn_current _nrn_current__snnap_cs_nopsm
+#define nrn_jacob _nrn_jacob__snnap_cs_nopsm
+#define nrn_state _nrn_state__snnap_cs_nopsm
+#define _net_receive _net_receive__snnap_cs_nopsm 
+#define states states__snnap_cs_nopsm 
  
 #define _threadargscomma_ _p, _ppvar, _thread, _nt,
 #define _threadargsprotocomma_ double* _p, Datum* _ppvar, Datum* _thread, _NrnThread* _nt,
@@ -45,37 +45,19 @@ extern double hoc_Exp(double);
 #define t _nt->_t
 #define dt _nt->_dt
 #define e _p[0]
-#define gmax _p[1]
-#define p _p[2]
-#define hA _p[3]
-#define sA _p[4]
-#define hB _p[5]
-#define sB _p[6]
-#define pB _p[7]
-#define Bmin _p[8]
-#define tauAmin _p[9]
-#define tauAmax _p[10]
-#define htauA _p[11]
-#define stauA _p[12]
-#define ptauA _p[13]
-#define htauA2 _p[14]
-#define stauA2 _p[15]
-#define ptauA2 _p[16]
-#define tauBmin _p[17]
-#define tauBmax _p[18]
-#define htauB _p[19]
-#define stauB _p[20]
-#define ptauB _p[21]
-#define Ainit _p[22]
-#define Binit _p[23]
-#define i _p[24]
-#define g _p[25]
-#define A _p[26]
-#define B _p[27]
-#define DA _p[28]
-#define DB _p[29]
-#define v _p[30]
-#define _g _p[31]
+#define g _p[1]
+#define dur _p[2]
+#define taucs _p[3]
+#define SP _p[4]
+#define i _p[5]
+#define on _p[6]
+#define Acs _p[7]
+#define Bcs _p[8]
+#define DAcs _p[9]
+#define DBcs _p[10]
+#define v _p[11]
+#define _g _p[12]
+#define _tsav _p[13]
 #define _nd_area  *_ppvar[0]._pval
  
 #if MAC
@@ -95,10 +77,7 @@ extern "C" {
  static Prop* _extcall_prop;
  /* external NEURON variables */
  /* declaration of user functions */
- static double _hoc_Ainf();
- static double _hoc_Binf();
- static double _hoc_tauB();
- static double _hoc_tauA();
+ static double _hoc_BcsDeriv();
  static int _mechtype;
 extern void _nrn_cacheloop_reg(int, int);
 extern void hoc_register_prop_size(int, int, int);
@@ -137,20 +116,11 @@ extern Memb_func* memb_func;
  "loc", _hoc_loc_pnt,
  "has_loc", _hoc_has_loc,
  "get_loc", _hoc_get_loc_pnt,
- "Ainf", _hoc_Ainf,
- "Binf", _hoc_Binf,
- "tauB", _hoc_tauB,
- "tauA", _hoc_tauA,
+ "BcsDeriv", _hoc_BcsDeriv,
  0, 0
 };
-#define Ainf Ainf_snnap_ionic1
-#define Binf Binf_snnap_ionic1
-#define tauB tauB_snnap_ionic1
-#define tauA tauA_snnap_ionic1
- extern double Ainf( _threadargsprotocomma_ double );
- extern double Binf( _threadargsprotocomma_ double );
- extern double tauB( _threadargsprotocomma_ double );
- extern double tauA( _threadargsprotocomma_ double );
+#define BcsDeriv BcsDeriv_snnap_cs_nopsm
+ extern double BcsDeriv( _threadargsproto_ );
  /* declare global and static user variables */
  /* some parameters have upper and lower limits */
  static HocParmLimits _hoc_parm_limits[] = {
@@ -158,27 +128,15 @@ extern Memb_func* memb_func;
 };
  static HocParmUnits _hoc_parm_units[] = {
  "e", "mV",
- "gmax", "uS",
- "hA", "mV",
- "sA", "mV",
- "hB", "mV",
- "sB", "mV",
- "tauAmin", "ms",
- "tauAmax", "ms",
- "htauA", "mV",
- "stauA", "mV",
- "htauA2", "mV",
- "stauA2", "mV",
- "tauBmin", "ms",
- "tauBmax", "ms",
- "htauB", "mV",
- "stauB", "mV",
- "i", "nA",
  "g", "uS",
+ "dur", "ms",
+ "taucs", "ms",
+ "Bcs", "/ms",
+ "i", "nA",
  0,0
 };
- static double A0 = 0;
- static double B0 = 0;
+ static double Acs0 = 0;
+ static double Bcs0 = 0;
  static double delta_t = 0.01;
  /* connect global user variables to hoc */
  static DoubScal hoc_scdoub[] = {
@@ -202,42 +160,23 @@ static void _ode_map(int, double**, double**, double*, Datum*, double*, int);
 static void _ode_spec(_NrnThread*, _Memb_list*, int);
 static void _ode_matsol(_NrnThread*, _Memb_list*, int);
  
-#define _cvode_ieq _ppvar[2]._i
+#define _cvode_ieq _ppvar[3]._i
  static void _ode_matsol_instance1(_threadargsproto_);
  /* connect range variables in _p that hoc is supposed to know about */
  static const char *_mechanism[] = {
  "7.5.0",
-"snnap_ionic1",
+"snnap_cs_nopsm",
  "e",
- "gmax",
- "p",
- "hA",
- "sA",
- "hB",
- "sB",
- "pB",
- "Bmin",
- "tauAmin",
- "tauAmax",
- "htauA",
- "stauA",
- "ptauA",
- "htauA2",
- "stauA2",
- "ptauA2",
- "tauBmin",
- "tauBmax",
- "htauB",
- "stauB",
- "ptauB",
- "Ainit",
- "Binit",
+ "g",
+ "dur",
+ "taucs",
+ "SP",
  0,
  "i",
- "g",
+ "on",
  0,
- "A",
- "B",
+ "Acs",
+ "Bcs",
  0,
  0};
  
@@ -251,37 +190,18 @@ static void nrn_alloc(Prop* _prop) {
 	_p = nrn_point_prop_->param;
 	_ppvar = nrn_point_prop_->dparam;
  }else{
- 	_p = nrn_prop_data_alloc(_mechtype, 32, _prop);
+ 	_p = nrn_prop_data_alloc(_mechtype, 14, _prop);
  	/*initialize range parameters*/
  	e = 0;
- 	gmax = 0;
- 	p = 0;
- 	hA = 0;
- 	sA = 0;
- 	hB = 0;
- 	sB = 0;
- 	pB = 0;
- 	Bmin = 0;
- 	tauAmin = 0;
- 	tauAmax = 0;
- 	htauA = 0;
- 	stauA = 0;
- 	ptauA = 1;
- 	htauA2 = 0;
- 	stauA2 = 1;
- 	ptauA2 = 0;
- 	tauBmin = 0;
- 	tauBmax = 0;
- 	htauB = 0;
- 	stauB = 0;
- 	ptauB = 1;
- 	Ainit = 0;
- 	Binit = 0;
+ 	g = 0;
+ 	dur = 0;
+ 	taucs = 0;
+ 	SP = 1;
   }
  	_prop->param = _p;
- 	_prop->param_size = 32;
+ 	_prop->param_size = 14;
   if (!nrn_point_prop_) {
- 	_ppvar = nrn_prop_datum_alloc(_mechtype, 3, _prop);
+ 	_ppvar = nrn_prop_datum_alloc(_mechtype, 4, _prop);
   }
  	_prop->dparam = _ppvar;
  	/*connect ionic variables to this model*/
@@ -293,29 +213,41 @@ static void nrn_alloc(Prop* _prop) {
  static HocStateTolerance _hoc_state_tol[] = {
  0,0
 };
+ 
+#define _tqitem &(_ppvar[2]._pvoid)
+ static void _net_receive(Point_process*, double*, double);
+ static void _thread_mem_init(Datum*);
+ static void _thread_cleanup(Datum*);
  extern Symbol* hoc_lookup(const char*);
 extern void _nrn_thread_reg(int, int, void(*)(Datum*));
 extern void _nrn_thread_table_reg(int, void(*)(double*, Datum*, Datum*, _NrnThread*, int));
 extern void hoc_register_tolerance(int, HocStateTolerance*, Symbol***);
 extern void _cvode_abstol( Symbol**, double*, int);
 
- void _snnap_ionic1_reg() {
+ void _snnap_cs_nopsm_reg() {
 	int _vectorized = 1;
   _initlists();
  	_pointtype = point_register_mech(_mechanism,
 	 nrn_alloc,nrn_cur, nrn_jacob, nrn_state, nrn_init,
-	 hoc_nrnpointerindex, 1,
+	 hoc_nrnpointerindex, 5,
 	 _hoc_create_pnt, _hoc_destroy_pnt, _member_func);
+  _extcall_thread = (Datum*)ecalloc(4, sizeof(Datum));
+  _thread_mem_init(_extcall_thread);
  _mechtype = nrn_get_mechtype(_mechanism[1]);
      _nrn_setdata_reg(_mechtype, _setdata);
-  hoc_register_prop_size(_mechtype, 32, 3);
+     _nrn_thread_reg(_mechtype, 1, _thread_mem_init);
+     _nrn_thread_reg(_mechtype, 0, _thread_cleanup);
+  hoc_register_prop_size(_mechtype, 14, 4);
   hoc_register_dparam_semantics(_mechtype, 0, "area");
   hoc_register_dparam_semantics(_mechtype, 1, "pntproc");
-  hoc_register_dparam_semantics(_mechtype, 2, "cvodeieq");
+  hoc_register_dparam_semantics(_mechtype, 2, "netsend");
+  hoc_register_dparam_semantics(_mechtype, 3, "cvodeieq");
  	hoc_register_cvode(_mechtype, _ode_count, _ode_map, _ode_spec, _ode_matsol);
  	hoc_register_tolerance(_mechtype, _hoc_state_tol, &_atollist);
+ pnt_receive[_mechtype] = _net_receive;
+ pnt_receive_size[_mechtype] = 1;
  	hoc_register_var(hoc_scdoub, hoc_vdoub, hoc_intfunc);
- 	ivoc_help("help ?1 snnap_ionic1 C:/S2N_CNS/snnap_ionic1.mod\n");
+ 	ivoc_help("help ?1 snnap_cs_nopsm C:/S2N_CNS/snnap_cs_nopsm.mod\n");
  hoc_register_limits(_mechtype, _hoc_parm_limits);
  hoc_register_units(_mechtype, _hoc_parm_units);
  }
@@ -327,102 +259,94 @@ static int _ninits = 0;
 static int _match_recurse=1;
 static void _modl_cleanup(){ _match_recurse=1;}
  
+#define _deriv1_advance _thread[0]._i
+#define _dith1 1
+#define _recurse _thread[2]._i
+#define _newtonspace1 _thread[3]._pvoid
+extern void* nrn_cons_newtonspace(int);
+ 
 static int _ode_spec1(_threadargsproto_);
 /*static int _ode_matsol1(_threadargsproto_);*/
- static int _slist1[2], _dlist1[2];
+ static int _slist2[2];
+  static int _slist1[2], _dlist1[2];
  static int states(_threadargsproto_);
  
 /*CVODE*/
  static int _ode_spec1 (double* _p, Datum* _ppvar, Datum* _thread, _NrnThread* _nt) {int _reset = 0; {
-   DA = ( Ainf ( _threadargscomma_ v ) - A ) / tauA ( _threadargscomma_ v ) ;
-   DB = ( Binf ( _threadargscomma_ v ) - B ) / tauB ( _threadargscomma_ v ) ;
+   DAcs = Bcs ;
+   DBcs = BcsDeriv ( _threadargs_ ) ;
    }
  return _reset;
 }
  static int _ode_matsol1 (double* _p, Datum* _ppvar, Datum* _thread, _NrnThread* _nt) {
- DA = DA  / (1. - dt*( ( ( ( - 1.0 ) ) ) / tauA ( _threadargscomma_ v ) )) ;
- DB = DB  / (1. - dt*( ( ( ( - 1.0 ) ) ) / tauB ( _threadargscomma_ v ) )) ;
+ DAcs = DAcs  / (1. - dt*( 0.0 )) ;
+ DBcs = DBcs  / (1. - dt*( 0.0 )) ;
   return 0;
 }
  /*END CVODE*/
- static int states (double* _p, Datum* _ppvar, Datum* _thread, _NrnThread* _nt) { {
-    A = A + (1. - exp(dt*(( ( ( - 1.0 ) ) ) / tauA ( _threadargscomma_ v ))))*(- ( ( ( Ainf ( _threadargscomma_ v ) ) ) / tauA ( _threadargscomma_ v ) ) / ( ( ( ( - 1.0 ) ) ) / tauA ( _threadargscomma_ v ) ) - A) ;
-    B = B + (1. - exp(dt*(( ( ( - 1.0 ) ) ) / tauB ( _threadargscomma_ v ))))*(- ( ( ( Binf ( _threadargscomma_ v ) ) ) / tauB ( _threadargscomma_ v ) ) / ( ( ( ( - 1.0 ) ) ) / tauB ( _threadargscomma_ v ) ) - B) ;
-   }
-  return 0;
-}
  
-double Ainf ( _threadargsprotocomma_ double _lv ) {
-   double _lAinf;
- _lAinf = 1.0 / ( 1.0 + exp ( ( hA - _lv ) / sA ) ) ;
+static int states (double* _p, Datum* _ppvar, Datum* _thread, _NrnThread* _nt) {int _reset=0; int error = 0;
+ { double* _savstate1 = _thread[_dith1]._pval;
+ double* _dlist2 = _thread[_dith1]._pval + 2;
+ int _counte = -1;
+ if (!_recurse) {
+ _recurse = 1;
+ {int _id; for(_id=0; _id < 2; _id++) { _savstate1[_id] = _p[_slist1[_id]];}}
+ error = nrn_newton_thread(_newtonspace1, 2,_slist2, _p, states, _dlist2, _ppvar, _thread, _nt);
+ _recurse = 0; if(error) {abort_run(error);}}
+ {
+   DAcs = Bcs ;
+   DBcs = BcsDeriv ( _threadargs_ ) ;
+   {int _id; for(_id=0; _id < 2; _id++) {
+if (_deriv1_advance) {
+ _dlist2[++_counte] = _p[_dlist1[_id]] - (_p[_slist1[_id]] - _savstate1[_id])/dt;
+ }else{
+_dlist2[++_counte] = _p[_slist1[_id]] - _savstate1[_id];}}}
+ } }
+ return _reset;}
+ 
+double BcsDeriv ( _threadargsproto_ ) {
+   double _lBcsDeriv;
+ if ( on  == 1.0 ) {
+     _lBcsDeriv = ( SP - 2.0 * taucs * Bcs - Acs ) / pow( taucs , 2.0 ) ;
+     }
+   else {
+     _lBcsDeriv = ( 0.0 - 2.0 * taucs * Bcs - Acs ) / pow( taucs , 2.0 ) ;
+     }
    
-return _lAinf;
+return _lBcsDeriv;
  }
  
-static double _hoc_Ainf(void* _vptr) {
+static double _hoc_BcsDeriv(void* _vptr) {
  double _r;
    double* _p; Datum* _ppvar; Datum* _thread; _NrnThread* _nt;
    _p = ((Point_process*)_vptr)->_prop->param;
   _ppvar = ((Point_process*)_vptr)->_prop->dparam;
   _thread = _extcall_thread;
   _nt = (_NrnThread*)((Point_process*)_vptr)->_vnt;
- _r =  Ainf ( _p, _ppvar, _thread, _nt, *getarg(1) );
+ _r =  BcsDeriv ( _p, _ppvar, _thread, _nt );
  return(_r);
 }
  
-double Binf ( _threadargsprotocomma_ double _lv ) {
-   double _lBinf;
- _lBinf = Bmin + ( 1.0 - Bmin ) / pow( ( 1.0 + exp ( ( _lv - hB ) / sB ) ) , pB ) ;
-   
-return _lBinf;
- }
- 
-static double _hoc_Binf(void* _vptr) {
- double _r;
-   double* _p; Datum* _ppvar; Datum* _thread; _NrnThread* _nt;
-   _p = ((Point_process*)_vptr)->_prop->param;
-  _ppvar = ((Point_process*)_vptr)->_prop->dparam;
-  _thread = _extcall_thread;
-  _nt = (_NrnThread*)((Point_process*)_vptr)->_vnt;
- _r =  Binf ( _p, _ppvar, _thread, _nt, *getarg(1) );
- return(_r);
-}
- 
-double tauA ( _threadargsprotocomma_ double _lv ) {
-   double _ltauA;
- _ltauA = tauAmin + ( tauAmax - tauAmin ) / pow( ( 1.0 + exp ( ( _lv - htauA ) / stauA ) ) , ptauA ) / pow( ( 1.0 + exp ( ( _lv - htauA2 ) / stauA2 ) ) , ptauA2 ) ;
-   
-return _ltauA;
- }
- 
-static double _hoc_tauA(void* _vptr) {
- double _r;
-   double* _p; Datum* _ppvar; Datum* _thread; _NrnThread* _nt;
-   _p = ((Point_process*)_vptr)->_prop->param;
-  _ppvar = ((Point_process*)_vptr)->_prop->dparam;
-  _thread = _extcall_thread;
-  _nt = (_NrnThread*)((Point_process*)_vptr)->_vnt;
- _r =  tauA ( _p, _ppvar, _thread, _nt, *getarg(1) );
- return(_r);
-}
- 
-double tauB ( _threadargsprotocomma_ double _lv ) {
-   double _ltauB;
- _ltauB = tauBmin + ( tauBmax - tauBmin ) / pow( ( 1.0 + exp ( ( _lv - htauB ) / stauB ) ) , ptauB ) ;
-   
-return _ltauB;
- }
- 
-static double _hoc_tauB(void* _vptr) {
- double _r;
-   double* _p; Datum* _ppvar; Datum* _thread; _NrnThread* _nt;
-   _p = ((Point_process*)_vptr)->_prop->param;
-  _ppvar = ((Point_process*)_vptr)->_prop->dparam;
-  _thread = _extcall_thread;
-  _nt = (_NrnThread*)((Point_process*)_vptr)->_vnt;
- _r =  tauB ( _p, _ppvar, _thread, _nt, *getarg(1) );
- return(_r);
-}
+static void _net_receive (_pnt, _args, _lflag) Point_process* _pnt; double* _args; double _lflag; 
+{  double* _p; Datum* _ppvar; Datum* _thread; _NrnThread* _nt;
+   _thread = (Datum*)0; _nt = (_NrnThread*)_pnt->_vnt;   _p = _pnt->_prop->param; _ppvar = _pnt->_prop->dparam;
+  if (_tsav > t){ extern char* hoc_object_name(); hoc_execerror(hoc_object_name(_pnt->ob), ":Event arrived out of order. Must call ParallelContext.set_maxstep AFTER assigning minimum NetCon.delay");}
+ _tsav = t;   if (_lflag == 1. ) {*(_tqitem) = 0;}
+ {
+   if ( _lflag  == 0.0 ) {
+     if (  ! on ) {
+       on = 1.0 ;
+       net_send ( _tqitem, _args, _pnt, t +  dur , 1.0 ) ;
+       }
+     else {
+       net_move ( _tqitem, _pnt, t + dur ) ;
+       }
+     }
+   if ( _lflag  == 1.0 ) {
+     on = 0.0 ;
+     }
+   } }
  
 static int _ode_count(int _type){ return 2;}
  
@@ -463,14 +387,25 @@ static void _ode_matsol(_NrnThread* _nt, _Memb_list* _ml, int _type) {
     v = NODEV(_nd);
  _ode_matsol_instance1(_threadargs_);
  }}
+ 
+static void _thread_mem_init(Datum* _thread) {
+   _thread[_dith1]._pval = (double*)ecalloc(4, sizeof(double));
+   _newtonspace1 = nrn_cons_newtonspace(2);
+ }
+ 
+static void _thread_cleanup(Datum* _thread) {
+   free((void*)(_thread[_dith1]._pval));
+   nrn_destroy_newtonspace(_newtonspace1);
+ }
 
 static void initmodel(double* _p, Datum* _ppvar, Datum* _thread, _NrnThread* _nt) {
   int _i; double _save;{
-  A = A0;
-  B = B0;
+  Acs = Acs0;
+  Bcs = Bcs0;
  {
-   A = Ainf ( _threadargscomma_ v ) ;
-   B = Binf ( _threadargscomma_ v ) ;
+   on = 0.0 ;
+   Acs = 0.0 ;
+   Bcs = 0.0 ;
    }
  
 }
@@ -486,6 +421,7 @@ _cntml = _ml->_nodecount;
 _thread = _ml->_thread;
 for (_iml = 0; _iml < _cntml; ++_iml) {
  _p = _ml->_data[_iml]; _ppvar = _ml->_pdata[_iml];
+ _tsav = -1e20;
 #if CACHEVEC
   if (use_cachevec) {
     _v = VEC_V(_ni[_iml]);
@@ -501,8 +437,7 @@ for (_iml = 0; _iml < _cntml; ++_iml) {
 }
 
 static double _nrn_current(double* _p, Datum* _ppvar, Datum* _thread, _NrnThread* _nt, double _v){double _current=0.;v=_v;{ {
-   g = gmax * pow( A , p ) * B ;
-   i = g * ( v - e ) ;
+   i = g * Acs * ( v - e ) ;
    }
  _current += i;
 
@@ -574,6 +509,8 @@ for (_iml = 0; _iml < _cntml; ++_iml) {
 static void nrn_state(_NrnThread* _nt, _Memb_list* _ml, int _type) {
 double* _p; Datum* _ppvar; Datum* _thread;
 Node *_nd; double _v = 0.0; int* _ni; int _iml, _cntml;
+double _dtsav = dt;
+if (secondorder) { dt *= 0.5; }
 #if CACHEVEC
     _ni = _ml->_nodeindices;
 #endif
@@ -593,9 +530,16 @@ for (_iml = 0; _iml < _cntml; ++_iml) {
   }
  v=_v;
 {
- {   states(_p, _ppvar, _thread, _nt);
-  }}}
-
+ {  _deriv1_advance = 1;
+ derivimplicit_thread(2, _slist1, _dlist1, _p, states, _ppvar, _thread, _nt);
+_deriv1_advance = 0;
+     if (secondorder) {
+    int _i;
+    for (_i = 0; _i < 2; ++_i) {
+      _p[_slist1[_i]] += dt*_p[_dlist1[_i]];
+    }}
+ }}}
+ dt = _dtsav;
 }
 
 static void terminal(){}
@@ -604,8 +548,10 @@ static void _initlists(){
  double _x; double* _p = &_x;
  int _i; static int _first = 1;
   if (!_first) return;
- _slist1[0] = &(A) - _p;  _dlist1[0] = &(DA) - _p;
- _slist1[1] = &(B) - _p;  _dlist1[1] = &(DB) - _p;
+ _slist1[0] = &(Acs) - _p;  _dlist1[0] = &(DAcs) - _p;
+ _slist1[1] = &(Bcs) - _p;  _dlist1[1] = &(DBcs) - _p;
+ _slist2[0] = &(Acs) - _p;
+ _slist2[1] = &(Bcs) - _p;
 _first = 0;
 }
 

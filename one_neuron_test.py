@@ -1,6 +1,6 @@
 from neuron import h, gui
 h.load_file('stdrun.hoc')
-from matplotlib import pyplot
+from matplotlib import plt
 import snnappy
 import numpy as np
 
@@ -8,13 +8,15 @@ import numpy as np
 ## Try to just copy the simulation from generic_cell_01.smu.ing
 
 t = snnappy.snnapsim()
-t.from_ing("generic_cell.smu.ing")
+t.from_ing('generic_cell_01.smu.ing')
 
 # create NEURON versions of SNNAP neurons
 cells = []
 mechs = []
-j = 0
+Is = []
+j = 0 # iterate index
 print 'building NEURON simulation...'
+print 'building neurons...'
 for nrn in t.nrns:
     # get morphology
     print 'building ' + nrn.name + '...'
@@ -122,11 +124,14 @@ for nrn in t.nrns:
     print 'done building ' + nrn.name + '.'
     j+=1
 
-# current clamp
-i = h.IClamp(cells[0](0.5))
-i.delay = t.inj_start # ms
-i.dur = t.inj_stop-t.inj_start # ms
-i.amp = t.inj_mag # nA
+# current clamps
+j = 0 # iterate index
+for cinj in t.cinjs:
+    Is.append(h.IClamp(cells[cinj.nrn_num](0.5)))
+    Is[j].delay = cinj.start # ms
+    Is[j].dur = cinj.stop-cinj.start # ms
+    Is[j].amp = cinj.mag # nA
+    j+=1
 # recording
 time = h.Vector()
 v = h.Vector()
@@ -140,7 +145,7 @@ h.finitialize()        # initialize state variables (INITIAL blocks)
 h.fcurrent()           # initialize all currents    (BREAKPOINT blocks)
 h.run()
 # plotting
-pyplot.plot(time, v)
-pyplot.xlabel('time (ms)')
-pyplot.ylabel('mV')
-pyplot.show()
+plt.plot(time, v)
+plt.xlabel('time (ms)')
+plt.ylabel('mV')
+plt.show()

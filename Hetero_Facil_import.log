@@ -1,0 +1,64 @@
+loading Hetero_Facil...
+run from 0.0ms to 150.0ms
+in steps of 0.05ms
+2 neurons to load
+loading neuron pre...
+3 channels to load
+loading channel leak...
+Ivd = G*(V --60.0)* fBR
+G = 0.06
+done loading leak at line 26
+loading channel Na...
+ssA = (1+e**((-40.1-V)/4.8)**-1.0
+tA = (0.0015-0.00045)*(1+e**((V--30.7)/1.85))**-1.0 + 0.00045
+dA/dt = (ssA-A)/tA, A_init=-1.0
+ssB = (1+e**((V--49.5)/9.2)**-1.0
+tB = (0.01-0.0024)*(1+e**((V--37.2)/3.5))**-1.0 + 0.0024
+dB/dt = (ssB-B)/tB, B_init=-1.0
+Ivd = G*(V -50.0)* fBR
+G = 7.5 * A**3.0 * B
+done loading Na at line 55
+loading channel K...
+ssA = (1+e**((-24.4-V)/8.8)**-1.0
+tA = (0.027-0.00216)*(1+e**((V--22.0)/11.7))**-1.0*(1+e**((V--49.0)/-11.2))**-1.0 + 0.00216
+dA/dt = (ssA-A)/tA, A_init=-1.0
+ssB = 0.15+(1-0.15)*(1+e**((V--14.4)/1.5)**-2.0
+tB = (0.2-0.02)*(1+e**((V--22.0)/8.3))**-1.0 + 0.02
+dB/dt = (ssB-B)/tB, B_init=-1.0
+Ivd = G*(V --80.0)* fBR
+G = 12.0 * A**4.0 * B
+done loading K at line 84
+done loading channels at line 83
+done loading pre at line 96
+loading neuron post...
+1 channels to load
+loading channel leak...
+Ivd = G*(V --60.0)* fBR
+G = 0.2
+done loading leak at line 115
+done loading channels at line 114
+done loading post at line 127
+done loading neurons at line 127
+0 electrical synapses to load
+done loading electrical synapses at line 131
+1 chemical synapses to load
+loading chemical synapse 0...
+from neuron num: 1 name: post
+to neuron num: 0 name: pre
+Xt = 1 when pre spiking, 0 when not
+(d**2 At)/dt**2 = (Xt-2*0.005*dAt/dt -At)/0.005**2
+fAt = At
+Ics = G*(V - -80.0)
+G = 0.5*fAt
+done loading chemical synapse 0 at line 155
+done loading chemical synapses at line 154
+2 current injection
+current injection to pre
+start at 0.01 ms
+stop at 0.015 ms
+amplitude of 15.0 nA
+current injection to pre
+start at 0.07 ms
+stop at 0.075 ms
+amplitude of 15.0 nA
+done loading Hetero_Facil at line 205

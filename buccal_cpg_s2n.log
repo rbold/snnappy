@@ -1,0 +1,762 @@
+building NEURON simulation...
+building neurons...
+building B4...
+nseg:1
+cm:0.001
+diam:1.0
+L:31831000.0
+adding leak
+g: 2e-07
+e: -70.0
+adding Na
+e: 50.0
+gmax: 7.5
+p: 3.0
+hA: -51.0
+sA: 5.0
+tauAmin: 0.9
+htauA: -52.0
+stauA: 2.0
+tauAmax: 3.0
+hB: -61.0
+sB: 9.0
+pB: 1.0
+Bmin: 0.0
+tauBmin: 4.8
+htauB: -48.0
+stauB: 3.5
+tauBmax: 20.0
+Ainit: -1.0
+Binit: -1.0
+adding K
+e: -80.0
+gmax: 25.0
+p: 4.0
+hA: -35.5
+sA: 9.0
+tauAmin: 3.0
+htauA: -23.0
+stauA: 10.0
+tauAmax: 34.0
+hB: -26.4
+sB: 1.5
+pB: 2.0
+Bmin: 0.15
+tauBmin: 40.0
+htauB: -33.0
+stauB: 8.0
+tauBmax: 400.0
+Ainit: -1.0
+Binit: -1.0
+done building B4.
+building B8...
+nseg:1
+cm:0.0005
+diam:1.0
+L:31831000.0
+adding leak
+g: 1e-07
+e: -70.0
+adding Na
+e: 50.0
+gmax: 7.5
+p: 3.0
+hA: -49.0
+sA: 5.0
+tauAmin: 0.9
+htauA: -50.0
+stauA: 2.0
+tauAmax: 3.0
+hB: -59.0
+sB: 9.0
+pB: 1.0
+Bmin: 0.0
+tauBmin: 4.8
+htauB: -46.0
+stauB: 3.5
+tauBmax: 20.0
+Ainit: -1.0
+Binit: -1.0
+adding K
+e: -80.0
+gmax: 25.0
+p: 4.0
+hA: -33.5
+sA: 9.0
+tauAmin: 3.0
+htauA: -20.0
+stauA: 10.0
+tauAmax: 34.0
+hB: -24.4
+sB: 1.5
+pB: 2.0
+Bmin: 0.15
+tauBmin: 40.0
+htauB: -31.0
+stauB: 8.0
+tauBmax: 400.0
+Ainit: -1.0
+Binit: -1.0
+done building B8.
+building B31...
+nseg:1
+cm:0.0005
+diam:1.0
+L:31831000.0
+adding leak
+g: 1e-07
+e: -60.0
+adding Na
+e: 30.0
+gmax: 0.09
+p: 1.0
+hA: -45.0
+sA: 1.0
+tauAmax: 300.0
+Ainit: -1.0
+done building B31.
+building B34...
+nseg:1
+cm:0.0005
+diam:1.0
+L:31831000.0
+adding leak
+g: 1e-07
+e: -60.0
+adding Na
+e: 50.0
+gmax: 7.5
+p: 3.0
+hA: -39.0
+sA: 5.0
+tauAmin: 0.9
+htauA: -40.0
+stauA: 2.0
+tauAmax: 3.0
+hB: -49.0
+sB: 9.0
+pB: 1.0
+Bmin: 0.0
+tauBmin: 4.8
+htauB: -36.0
+stauB: 3.5
+tauBmax: 20.0
+Ainit: -1.0
+Binit: -1.0
+adding K
+e: -70.0
+gmax: 25.0
+p: 4.0
+hA: -23.5
+sA: 9.0
+tauAmin: 3.0
+htauA: -10.0
+stauA: 10.0
+tauAmax: 34.0
+hB: -14.4
+sB: 1.5
+pB: 2.0
+Bmin: 0.15
+tauBmin: 40.0
+htauB: -21.0
+stauB: 8.0
+tauBmax: 400.0
+Ainit: -1.0
+Binit: -1.0
+adding K_A
+e: -70.0
+gmax: 0.1
+p: 2.0
+hA: -55.0
+sA: 1.0
+tauAmax: 1.0
+hB: -50.0
+sB: 4.0
+pB: 1.0
+Bmin: 0.0
+tauBmax: 500.0
+Ainit: -1.0
+Binit: -1.0
+done building B34.
+building B35...
+nseg:1
+cm:0.0005
+diam:1.0
+L:31831000.0
+adding leak
+g: 1e-07
+e: -60.0
+adding Na
+e: 50.0
+gmax: 7.5
+p: 3.0
+hA: -39.0
+sA: 5.0
+tauAmin: 0.9
+htauA: -40.0
+stauA: 2.0
+tauAmax: 3.0
+hB: -49.0
+sB: 9.0
+pB: 1.0
+Bmin: 0.0
+tauBmin: 4.8
+htauB: -36.0
+stauB: 3.5
+tauBmax: 20.0
+Ainit: -1.0
+Binit: -1.0
+adding Na_pp
+e: -28.0
+gmax: 0.12
+p: 1.0
+hA: -48.0
+sA: 2.5
+tauAmax: 200.0
+hB: -48.0
+sB: 0.5
+pB: 1.0
+Bmin: 0.0
+tauBmax: 9500.0
+Ainit: -1.0
+Binit: -1.0
+adding K
+e: -70.0
+gmax: 25.0
+p: 4.0
+hA: -23.5
+sA: 9.0
+tauAmin: 3.0
+htauA: -10.0
+stauA: 10.0
+tauAmax: 34.0
+hB: -14.4
+sB: 1.5
+pB: 2.0
+Bmin: 0.15
+tauBmin: 40.0
+htauB: -21.0
+stauB: 8.0
+tauBmax: 400.0
+Ainit: -1.0
+Binit: -1.0
+done building B35.
+building B51...
+nseg:1
+cm:0.0005
+diam:1.0
+L:31831000.0
+adding leak
+g: 1e-07
+e: -70.0
+adding Na
+e: 50.0
+gmax: 7.5
+p: 3.0
+hA: -49.0
+sA: 5.0
+tauAmin: 0.9
+htauA: -50.0
+stauA: 2.0
+tauAmax: 3.0
+hB: -59.0
+sB: 9.0
+pB: 1.0
+Bmin: 0.0
+tauBmin: 4.8
+htauB: -46.0
+stauB: 3.5
+tauBmax: 20.0
+Ainit: -1.0
+Binit: -1.0
+adding Na_pp
+e: 30.0
+gmax: 0.09
+p: 1.0
+hA: -50.0
+sA: 1.0
+tauAmax: 150.0
+Ainit: -1.0
+adding K
+e: -80.0
+gmax: 25.0
+p: 4.0
+hA: -33.5
+sA: 9.0
+tauAmin: 3.0
+htauA: -20.0
+stauA: 10.0
+tauAmax: 34.0
+hB: -24.4
+sB: 1.5
+pB: 2.0
+Bmin: 0.15
+tauBmin: 40.0
+htauB: -31.0
+stauB: 8.0
+tauBmax: 400.0
+Ainit: -1.0
+Binit: -1.0
+adding K_pp
+e: -80.0
+gmax: 0.4
+p: 1.0
+hA: -50.0
+sA: 1.0
+tauAmax: 4000.0
+Ainit: -1.0
+done building B51.
+building B52...
+nseg:1
+cm:0.0005
+diam:1.0
+L:31831000.0
+adding leak
+g: 1e-07
+e: -60.0
+adding Na
+e: 50.0
+gmax: 7.5
+p: 3.0
+hA: -39.0
+sA: 5.0
+tauAmin: 0.9
+htauA: -40.0
+stauA: 2.0
+tauAmax: 3.0
+hB: -49.0
+sB: 9.0
+pB: 1.0
+Bmin: 0.0
+tauBmin: 4.8
+htauB: -36.0
+stauB: 3.5
+tauBmax: 20.0
+Ainit: -1.0
+Binit: -1.0
+adding K
+e: -70.0
+gmax: 25.0
+p: 4.0
+hA: -23.5
+sA: 9.0
+tauAmin: 3.0
+htauA: -20.0
+stauA: 10.0
+tauAmax: 34.0
+hB: -14.4
+sB: 1.5
+pB: 2.0
+Bmin: 0.15
+tauBmin: 40.0
+htauB: -21.0
+stauB: 8.0
+tauBmax: 400.0
+Ainit: -1.0
+Binit: -1.0
+adding Na_rb
+e: -30.0
+gmax: 0.11
+p: 1.0
+hA: -63.0
+sA: -1.0
+tauAmax: 2000.0
+Ainit: -1.0
+done building B52.
+building B63...
+nseg:1
+cm:0.0005
+diam:1.0
+L:31831000.0
+adding leak
+g: 1e-07
+e: -60.0
+adding Na
+e: 50.0
+gmax: 7.5
+p: 3.0
+hA: -39.0
+sA: 5.0
+tauAmin: 0.9
+htauA: -40.0
+stauA: 2.0
+tauAmax: 3.0
+hB: -49.0
+sB: 9.0
+pB: 1.0
+Bmin: 0.0
+tauBmin: 4.8
+htauB: -36.0
+stauB: 3.5
+tauBmax: 20.0
+Ainit: -1.0
+Binit: -1.0
+adding K
+e: -70.0
+gmax: 40.0
+p: 4.0
+hA: -23.5
+sA: 9.0
+tauAmin: 3.0
+htauA: -10.0
+stauA: 10.0
+tauAmax: 50.0
+Ainit: -1.0
+done building B63.
+building B64...
+nseg:1
+cm:0.0005
+diam:1.0
+L:31831000.0
+adding leak
+g: 1e-07
+e: -70.0
+adding Na
+e: 50.0
+gmax: 7.5
+p: 3.0
+hA: -49.0
+sA: 5.0
+tauAmin: 0.9
+htauA: -50.0
+stauA: 2.0
+tauAmax: 3.0
+hB: -59.0
+sB: 9.0
+pB: 1.0
+Bmin: 0.0
+tauBmin: 4.8
+htauB: -46.0
+stauB: 3.5
+tauBmax: 20.0
+Ainit: -1.0
+Binit: -1.0
+adding Na_pp
+e: 50.0
+gmax: 0.1
+p: 1.0
+hA: -60.0
+sA: 1.0
+tauAmax: 100.0
+Ainit: -1.0
+adding K_pp
+e: -80.0
+gmax: 0.6
+p: 1.0
+hA: -50.0
+sA: 1.0
+tauAmax: 4000.0
+Ainit: -1.0
+adding K
+e: -80.0
+gmax: 40.0
+p: 4.0
+hA: -33.5
+sA: 9.0
+tauAmin: 3.0
+htauA: -20.0
+stauA: 10.0
+tauAmax: 34.0
+Ainit: -1.0
+done building B64.
+building Z...
+nseg:1
+cm:0.0005
+diam:1.0
+L:31831000.0
+adding leak
+g: 1e-07
+e: -60.0
+adding Na
+e: 50.0
+gmax: 7.5
+p: 3.0
+hA: -39.0
+sA: 5.0
+tauAmin: 0.9
+htauA: -40.0
+stauA: 2.0
+tauAmax: 3.0
+hB: -49.0
+sB: 9.0
+pB: 1.0
+Bmin: 0.0
+tauBmin: 4.8
+htauB: -36.0
+stauB: 3.5
+tauBmax: 20.0
+Ainit: -1.0
+Binit: -1.0
+adding Na_pp
+e: -28.0
+gmax: 0.16
+p: 3.0
+hA: -48.0
+sA: 0.5
+tauAmax: 200.0
+hB: -48.0
+sB: 0.5
+pB: 1.0
+Bmin: 0.0
+tauBmax: 9500.0
+Ainit: -1.0
+Binit: -1.0
+adding K
+e: -70.0
+gmax: 25.0
+p: 4.0
+hA: -23.5
+sA: 9.0
+tauAmin: 3.0
+htauA: -10.0
+stauA: 10.0
+tauAmax: 34.0
+hB: -14.4
+sB: 1.5
+pB: 2.0
+Bmin: 0.15
+tauBmin: 40.0
+htauB: -21.0
+stauB: 8.0
+tauBmax: 400.0
+Ainit: -1.0
+Binit: -1.0
+done building Z.
+building 40chemical synapses...
+adding chemical synapse from neuron B8 to B4
+e: -80.0
+g: 1.0
+dur: 3.0
+taucs: 10.0
+adding chemical synapse from neuron B31 to B4
+e: -10.0
+g: 0.15
+dur: 3.0
+taucs: 30.0
+adding chemical synapse from neuron B51 to B4
+e: -80.0
+g: 3.0
+dur: 3.0
+taucs: 10.0
+adding chemical synapse from neuron B52 to B4
+e: -70.0
+g: 5.0
+dur: 3.0
+taucs: 5.0
+adding chemical synapse from neuron B64 to B4
+e: -80.0
+g: 0.3
+dur: 3.0
+taucs: 10.0
+adding chemical synapse from neuron B8 to B34
+e: -80.0
+g: 0.06
+dur: 3.0
+taucs: 1.0
+adding chemical synapse from neuron B8 to B34
+e: -85.0
+g: -1.3
+dur: 3.0
+taucs: 300.0
+adding chemical synapse from neuron B31 to B34
+tauSP1: -11.0
+tauSP2: 230.0
+e: -10.0
+g: 0.1
+dur: 3.0
+taucs: 10.0
+adding chemical synapse from neuron B63 to B34
+e: -10.0
+g: 0.03
+dur: 3.0
+taucs: 10.0
+adding chemical synapse from neuron B64 to B34
+tauSP1: -20.0
+tauSP2: 100.0
+e: -80.0
+g: 0.03
+dur: 3.0
+taucs: 1.0
+adding chemical synapse from neuron B4 to B35
+tauSP1: 10.0
+tauSP2: 100.0
+e: -10.0
+g: 0.14
+dur: 3.0
+taucs: 1.0
+adding chemical synapse from neuron B4 to B35
+e: -10.0
+g: 0.3
+dur: 3.0
+taucs: 800.0
+adding chemical synapse from neuron B31 to B35
+tauSP1: -14.0
+tauSP2: 200.0
+e: -10.0
+g: 0.08
+dur: 3.0
+taucs: 10.0
+adding chemical synapse from neuron B51 to B35
+e: -80.0
+g: 0.1
+dur: 3.0
+taucs: 1.0
+adding chemical synapse from neuron B51 to B35
+e: -80.0
+g: 0.56
+dur: 3.0
+taucs: 400.0
+adding chemical synapse from neuron B52 to B35
+tauSP1: 9.0
+tauSP2: 60.0
+e: -10.0
+g: 0.09
+dur: 3.0
+taucs: 1.0
+adding chemical synapse from neuron B52 to B35
+e: -10.0
+g: 0.26
+dur: 3.0
+taucs: 500.0
+adding chemical synapse from neuron B8 to B51
+tauSP1: -10.0
+tauSP2: 80.0
+e: -10.0
+g: 0.1
+dur: 3.0
+taucs: 5.0
+adding chemical synapse from neuron B52 to B51
+e: -70.0
+g: 3.2
+dur: 3.0
+taucs: 50.0
+adding chemical synapse from neuron B52 to B51
+tauSP1: 20.0
+tauSP2: 90.0
+e: -70.0
+g: 0.7
+dur: 3.0
+taucs: 2.0
+adding chemical synapse from neuron B64 to B51
+e: -10.0
+g: 0.05
+dur: 3.0
+taucs: 5.0
+adding chemical synapse from neuron Z to B52
+e: -70.0
+g: 0.06
+dur: 3.0
+taucs: 10.0
+adding chemical synapse from neuron B4 to B52
+e: -80.0
+g: 1.5
+dur: 3.0
+taucs: 40.0
+adding chemical synapse from neuron B8 to B52
+e: -80.0
+g: 0.8
+dur: 3.0
+taucs: 5.0
+adding chemical synapse from neuron B35 to B52
+tauSP1: -30.0
+tauSP2: 400.0
+e: -70.0
+g: 0.035
+dur: 3.0
+taucs: 1.0
+adding chemical synapse from neuron B51 to B52
+e: -80.0
+g: 0.5
+dur: 3.0
+taucs: 1.0
+adding chemical synapse from neuron B51 to B52
+tauSP1: -40.0
+tauSP2: 1000.0
+e: -80.0
+g: 1.5
+dur: 3.0
+taucs: 50.0
+adding chemical synapse from neuron B64 to B52
+e: -80.0
+g: 6.0
+dur: 3.0
+taucs: 20.0
+adding chemical synapse from neuron B8 to B63
+e: -80.0
+g: 0.03
+dur: 3.0
+taucs: 1.0
+adding chemical synapse from neuron B31 to B63
+tauSP1: -20.0
+tauSP2: 250.0
+e: -10.0
+g: 0.25
+dur: 3.0
+taucs: 10.0
+adding chemical synapse from neuron B34 to B63
+e: -10.0
+g: 1.0
+dur: 3.0
+taucs: 20.0
+adding chemical synapse from neuron B64 to B63
+tauSP1: -10.0
+tauSP2: 50.0
+e: -80.0
+g: 0.02
+dur: 3.0
+taucs: 10.0
+adding chemical synapse from neuron Z to B63
+e: -10.0
+g: 0.7
+dur: 3.0
+taucs: 1000.0
+adding chemical synapse from neuron B4 to B64
+e: -10.0
+g: 0.35
+dur: 3.0
+taucs: 10.0
+adding chemical synapse from neuron B31 to B64
+e: -70.0
+g: 5.0
+dur: 3.0
+taucs: 20.0
+adding chemical synapse from neuron B34 to B64
+e: -70.0
+g: 5.0
+dur: 3.0
+taucs: 20.0
+adding chemical synapse from neuron B35 to B64
+e: -70.0
+g: 5.0
+dur: 3.0
+taucs: 20.0
+adding chemical synapse from neuron B52 to B64
+e: -70.0
+g: 5.0
+dur: 3.0
+taucs: 5.0
+adding chemical synapse from neuron B63 to B64
+e: -70.0
+g: 5.0
+dur: 3.0
+taucs: 20.0
+adding chemical synapse from neuron B64 to Z
+e: -10.0
+g: 3.5
+dur: 3.0
+taucs: 500.0
+building electrical synapses as linearmechanism...
+injection to B63 7
+amplitude 2.0
+set __nrnsec_0000000011c7d370 initial voltage to -70.0
+set __nrnsec_0000000011c7d3d0 initial voltage to -70.0
+set __nrnsec_0000000011c7d430 initial voltage to -60.0
+set __nrnsec_0000000011c7d490 initial voltage to -60.0
+set __nrnsec_0000000011c7d4f0 initial voltage to -60.0
+set __nrnsec_0000000011c7d550 initial voltage to -70.0
+set __nrnsec_0000000011c7d5b0 initial voltage to -60.0
+set __nrnsec_0000000011c7d610 initial voltage to -60.0
+set __nrnsec_0000000011c7d670 initial voltage to -70.0
+set __nrnsec_0000000011c7d6d0 initial voltage to -60.0
+initializing...
+Changed dt

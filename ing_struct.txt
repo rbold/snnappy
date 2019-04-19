@@ -1,7 +1,6 @@
 The Structure of a .ing file resulting from running SNNAP
 __________________________________________________________
 
-
 Simulation name
 Simulation timing Start Stop Step
 Whether to have online graph

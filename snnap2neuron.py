@@ -1,13 +1,24 @@
-from neuron import h
+from neuron import h, gui
 h.load_file('stdrun.hoc')
 import matplotlib.pyplot as plt
 import snnappy
 import numpy as np
+import sys
 
 ssim = snnappy.snnapsim()
 # ssim.from_ing('rBMP.smu.ing')
 # ssim.from_ing('generic_cell_01.smu.ing')
-ssim.from_ing('CS_exc.smu.ing')
+# ssim.from_ing('ELE_syn.smu.ing')
+# ssim.from_ing('network_1.smu.ing')
+# ssim.from_ing('CS_exc.smu.ing')
+ssim.from_ing('CS_inh.smu.ing')
+# ssim.from_ing('half_cen.smu.ing')
+
+print 'building NEURON simulation...'
+
+old_stdout = sys.stdout
+log_file = open(ssim.name+"_s2n.log","w")
+sys.stdout = log_file
 
 # create NEURON versions of SNNAP neurons
 cells = []
@@ -158,7 +169,7 @@ for nrn in ssim.nrns:
 
 csyns = []
 netcons = []
-print 'building chemical synapses...'
+print 'building '+str(len(ssim.csyns))+'chemical synapses...'
 for csyn in ssim.csyns:
         if csyn.method == '1':
             print 'adding chemical synapse from neuron ' + csyn.pre_name + ' to '+csyn.post_name
@@ -190,6 +201,8 @@ ne   = len(ssim.nrns)       # size of matrix describing electrical synapses
 c    = h.Matrix(ne,ne,2)   # sparse (unallocated) zero matrix (efficient)
 g    = h.Matrix(ne,ne)
 y    = h.Vector(ne)
+R1   = h.Vector(ne) # add randomness by playing vector into variable
+R2   = h.Vector(ne)
 b    = h.Vector(ne)
 sl   = h.SectionList()   # list of cells; order corresponds to y
 xvec = h.Vector(ne, 0.5)  # locations of the synaptic connections
@@ -204,13 +217,16 @@ for esyn in ssim.esyns:
     g.x[esyn.post_num][esyn.pre_num] = -esyn.G2*10**-6 # S/cm**2
 es = h.LinearMechanism(c, g, y, b, sl, xvec)
 
-extra_time = 0 # give a little time to reach ss
+
 # current clamps
 j = 0 # iterate index
 for cinj in ssim.cinjs:
-    Is.append(h.IClamp(cells[0](0.5))) # nrn_num is not what I thought it was
-    print 'injection to '+ cinj.nrn_name + str(cinj.nrn_num)
-    Is[j].delay = cinj.start + extra_time# ms
+    for nrn in ssim.nrns:
+        if nrn.name == cinj.nrn_name:
+            nrn_num = nrn.num
+    Is.append(h.IClamp(cells[nrn_num](0.5))) 
+    print 'injection to '+ cinj.nrn_name + ' ' +str(nrn_num)
+    Is[j].delay = cinj.start # ms
     Is[j].dur = cinj.stop-cinj.start # ms
     Is[j].amp = cinj.mag # nA
     print 'amplitude '+ str(cinj.mag)
@@ -224,19 +240,45 @@ for cell in cells:
     vs.append(h.Vector())
     vs[j].record(cells[j](0.5)._ref_v)
     j+=1
+
 # simulation
-h.v_init = -60           # (mV)
-h.tstop  = ssim.stop + extra_time         # (ms)
+# h.v_init = -60           # (mV)
+h.tstop  = ssim.stop       # (ms)
 h.cvode.active(1)      # enable variable time steps
-h.finitialize()        # initialize state variables (INITIAL blocks)
-h.fcurrent()           # initialize all currents    (BREAKPOINT blocks)
-h.run()
-# plotting
+# h.finitialize()        # initialize state variables (INITIAL blocks)
+# h.fcurrent()           # initialize all currents    (BREAKPOINT blocks)
+# new code to happen after initialization here
 j=0
-for v in vs:
-    plt.plot(time, v, label=ssim.nrns[j].name)
+for nrn in ssim.nrns:
+    cells[j].v = nrn.vminit
+    print 'set '+str(cells[j])+' initial voltage to ' +str(nrn.vminit)
     j+=1
+print('initializing...')
+# only need the following if states have been changed
+if h.cvode.active():
+    h.cvode.re_init()
+else:
+    h.fcurrent()
+h.frecord_init()
+h.run()
+
+sys.stdout = old_stdout
+log_file.close()
+
+# plotting
+# order = [2,7,4,3,9,8,5,0,6,1]
+order = []
+pltf = 2000
+pltt = 15000
+for j in range(len(vs)):
+    plt.subplot(len(vs), 1, j+1)
+    if order != []:
+        ind = order[j]
+    else:
+        ind = j
+    plt.plot(np.array(time)[pltf:pltt], np.array(vs[ind])[pltf:pltt],label=ssim.nrns[ind].name)
+    plt.ylim(-72, 60)
+    plt.legend(loc='right')
 plt.xlabel('time (ms)')
 plt.ylabel('mV')
-plt.legend()
 plt.show()

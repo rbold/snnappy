@@ -1,7 +1,10 @@
 ## This file contains classes representing SNNAP objects in python
+import sys
+
 
 class snnapsim:
     def from_ing(self, ing_file):
+        print 'importing SNNAP simulation...'
         ing = open(ing_file, 'r').readlines() # list of lines as strings
         i = 0 # line index
         while i < len(ing):
@@ -13,6 +16,9 @@ class snnapsim:
                 if v == "LOGICAL_NAME":
                     # load name
                     self.name = line[1]
+                    old_stdout = sys.stdout
+                    log_file = open(self.name+"_import.log","w")
+                    sys.stdout = log_file
                     print "loading " + self.name +"..."
                     i += 1
                 elif v == 'TIMING:':
@@ -39,17 +45,22 @@ class snnapsim:
                     num_cinj = line[1]
                     print num_cinj + " current injection"
                     self.cinjs = []
-                    cinj_loaded = 0
-                    while cinj_loaded < int(num_cinj):
-                        i += 1
-                        line = ing[i].split()
-                        self.cinjs.append(snnapcinj())
-                        self.cinjs[cinj_loaded].from_ing(line)
-                        cinj_loaded += 1
+                    if num_cinj != '0':
+                        cinj_loaded = 0
+                        while cinj_loaded < int(num_cinj):
+                            i += 1
+                            line = ing[i].split()
+                            self.cinjs.append(snnapcinj())
+                            self.cinjs[cinj_loaded].from_ing(line)
+                            cinj_loaded += 1
+                    else:
+                        i+=1
                 # skipping stuff again
                 else:
                     i += 1
         print 'done loading ' + self.name + ' at line '+ str(i)
+        sys.stdout = old_stdout
+        log_file.close()
     
     def getnrns(self, ing, n, i):
         self.nrns = []
@@ -176,11 +187,14 @@ class snnapchnl:
         i += 1
         while v != '#ION' and v != 'vdg#='+str(num+1):
             line = ing[i].split()
-            v = line[0]
-            if v == 'Ivd':
-                i = self.getivd(line[1], ing, i)
-            else:
+            if len(line) == 0:
                 i += 1
+            else:
+                v = line[0]
+                if v == 'Ivd':
+                    i = self.getivd(line[1], ing, i)
+                else:
+                    i += 1
         print 'done loading ' + self.name + ' at line '+ str(i)
         return i
     
@@ -302,9 +316,9 @@ class snnapchnl:
             self.h_tA = float(line[2]) # mV
             self.s_tA = float(line[3]) # mV
             self.P_tA = float(line[4])
-            self.h2_tA = float(line[2]) # mV
-            self.s2_tA = float(line[3]) # mV
-            self.P2_tA = float(line[4])
+            self.h2_tA = float(line[5]) # mV
+            self.s2_tA = float(line[6]) # mV
+            self.P2_tA = float(line[7])
             self.tA_equation = 'tA = ('+str(self.tx_tA)+'-'+str(self.tn_tA)+\
                 ')*(1+e**((V-'+str(self.h_tA)+')/'+str(self.s_tA)+'))**-'+str(self.P_tA)\
                     +'*(1+e**((V-'+str(self.h2_tA)+')/'+str(self.s2_tA)+'))**-'+str(self.P2_tA)\
@@ -523,7 +537,7 @@ class snnapcsyn:
             line = ing[i].split()
             self.is_PSM = int(line[1])
             # Get PSM
-            i += 1
+            i += 3
             line = ing[i].split()
             self.PSMmeth = line[1]
             i = self.getPSM(ing, i, self.PSMmeth)
@@ -547,7 +561,7 @@ class snnapcsyn:
     
 class snnapcinj:
     def from_ing(self,line):
-        self.nrn_num = int(line[0])
+        self.num = int(line[0])
         self.nrn_name = line[1]
         print 'current injection to ' + line[1]
         self.start = float(line[2])*1000.0 # milliseconds
@@ -556,3 +570,5 @@ class snnapcinj:
         print 'stop at ' + line[3] + ' ms'                    
         self.mag = float(line[4]) # could be a function though
         print 'amplitude of ' + line[4] + ' nA'
+
+

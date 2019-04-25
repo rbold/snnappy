@@ -14,7 +14,9 @@ Convert example simulation to NEURON
 
 2. Run `snnap2neuron.py`
 
-`*.smu.ing` files are generated whenever a SNNAP simulation is run, to convert another simulation to NEURON:
+`*.smu.ing` files are generated whenever a SNNAP simulation is run.
+
+To convert another simulation to NEURON:
 
 1. Run it in SNNAP
 

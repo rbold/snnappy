@@ -1,4 +1,5 @@
 COMMENT
+ * This is a modification of
  * snnap_cs.mod
  *
  * NEURON mechanism for implementing a SNNAP-style chemical synapse

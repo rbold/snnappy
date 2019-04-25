@@ -1,4 +1,15 @@
-from neuron import h, gui
+'''
+Using information describing a SNNAP simulation which is extracted from a .ing file by
+snnappy.py to recreate results in NEURON
+
+Change variable ing_file to try on other simulations.
+
+This also outputs a log file describing each step in recreating the results for debugging purposes.
+
+Written by Reid Bolding, contact reid@case.edu
+'''
+
+from neuron import h, gui # gui is optional
 h.load_file('stdrun.hoc')
 import matplotlib.pyplot as plt
 import snnappy
@@ -6,18 +17,13 @@ import numpy as np
 import sys
 
 ssim = snnappy.snnapsim()
-# ssim.from_ing('rBMP.smu.ing')
-# ssim.from_ing('generic_cell_01.smu.ing')
-# ssim.from_ing('ELE_syn.smu.ing')
-# ssim.from_ing('network_1.smu.ing')
-# ssim.from_ing('CS_exc.smu.ing')
-ssim.from_ing('CS_inh.smu.ing')
-# ssim.from_ing('half_cen.smu.ing')
+ing_file = 'INGfiles/CS_inh.smu.ing' # relative path to *.ing file to convert to NEURON
+ssim.from_ing(ing_file)
 
 print 'building NEURON simulation...'
 
 old_stdout = sys.stdout
-log_file = open(ssim.name+"_s2n.log","w")
+log_file = open(ssim.name+'_s2n.log','w')
 sys.stdout = log_file
 
 # create NEURON versions of SNNAP neurons
@@ -38,7 +44,6 @@ for nrn in ssim.nrns:
     cells[j].diam = 1 # um
     print 'diam:'+ str(cells[j].diam)
     cells[j].L = 3.1831*10**7 # um, just make the cell be 1 cm**2
-    # cells[j].L = nrn.am/np.pi*10**5 # um
     print 'L:' + str(cells[j].L)
     # total area = pi*diam*L
     
@@ -195,13 +200,13 @@ for csyn in ssim.csyns:
         else:
             raise NotImplementedError
 
-# create NEURON versions of SNNAP electrical synapses
+# create NEURON version of SNNAP electrical synapses, a LinearMechanism
 print 'building electrical synapses as linearmechanism...'
 ne   = len(ssim.nrns)       # size of matrix describing electrical synapses
 c    = h.Matrix(ne,ne,2)   # sparse (unallocated) zero matrix (efficient)
 g    = h.Matrix(ne,ne)
 y    = h.Vector(ne)
-R1   = h.Vector(ne) # add randomness by playing vector into variable
+R1   = h.Vector(ne) # add randomness by playing vector into variable, have not implemented
 R2   = h.Vector(ne)
 b    = h.Vector(ne)
 sl   = h.SectionList()   # list of cells; order corresponds to y
@@ -241,15 +246,13 @@ for cell in cells:
     vs[j].record(cells[j](0.5)._ref_v)
     j+=1
 
-# simulation
-# h.v_init = -60           # (mV)
+# custom initialization
 h.tstop  = ssim.stop       # (ms)
 h.cvode.active(1)      # enable variable time steps
-# h.finitialize()        # initialize state variables (INITIAL blocks)
-# h.fcurrent()           # initialize all currents    (BREAKPOINT blocks)
-# new code to happen after initialization here
 j=0
 for nrn in ssim.nrns:
+    # trying to set unique initial voltage for each neuron here, it does not seem to work
+    # I think a hoc helper file would help with some of these issues 
     cells[j].v = nrn.vminit
     print 'set '+str(cells[j])+' initial voltage to ' +str(nrn.vminit)
     j+=1
@@ -266,7 +269,7 @@ sys.stdout = old_stdout
 log_file.close()
 
 # plotting
-# order = [2,7,4,3,9,8,5,0,6,1]
+# order = [2,7,4,3,9,8,5,0,6,1] # plot membrane voltages in a certain order to match SNNAP figure
 order = []
 pltf = 2000
 pltt = 15000

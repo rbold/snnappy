@@ -1,8 +1,22 @@
-## This file contains classes representing SNNAP objects in python
-import sys
+'''
+This file contains classes representing SNNAP objects in python
+
+Running a SNNAP simulation creates a file with the extension .ing which details the simulation
+parameters in plain text
+
+Use snnapsim.from_ing(relative path to *.smu.ing file) to extract all relevant info about a
+SNNAP simulation to python
+
+Written by Reid Bolding, contact reid@case.edu
+'''
+
+import sys 
 
 
 class snnapsim:
+    '''
+    Parameters and elements of a SNNAP simulation
+    '''
     def from_ing(self, ing_file):
         print 'importing SNNAP simulation...'
         ing = open(ing_file, 'r').readlines() # list of lines as strings
@@ -118,6 +132,9 @@ class snnapsim:
 
 
 class snnapnrn:
+    '''
+    SNNAP neuron
+    '''
     def from_ing(self, num, name, ing, i):
         self.num = num
         self.name = name
@@ -179,6 +196,9 @@ class snnapnrn:
         return i
 
 class snnapchnl:
+    '''
+    SNNAP neuron membrane channel
+    '''
     def from_ing(self, num, name, ing, i):
         self.num = num
         self.name = name
@@ -398,6 +418,9 @@ class snnapchnl:
         return i 
 
 class snnapesyn:
+    '''
+    SNNAP electrical synapse
+    '''
     def from_ing(self, num, ing, i):
         self.num = num
         print 'loading electrical synapse ' + str(num)+ '...'
@@ -442,6 +465,9 @@ class snnapesyn:
         return i
 
 class snnapcsyn:
+    '''
+    SNNAP chemical synapse
+    '''
     def from_ing(self, num, ing, i):
         self.num = num
         print 'loading chemical synapse ' + str(num)+ '...'
@@ -560,6 +586,9 @@ class snnapcsyn:
 
     
 class snnapcinj:
+    '''
+    SNNAP current injection
+    '''
     def from_ing(self,line):
         self.num = int(line[0])
         self.nrn_name = line[1]
